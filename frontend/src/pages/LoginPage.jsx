@@ -3,6 +3,7 @@ import { useAuth } from '../hooks/useAuth';
 import { Navigate, useSearchParams } from 'react-router-dom';
 import { Shield, Lock, CheckCircle2, ChevronRight, Terminal, Loader2 } from 'lucide-react';
 import axios from 'axios';
+import { API_BASE } from '../services/api';
 
 export default function LoginPage() {
   const { isAuthenticated, isLoading, getLoginUrl, isGettingLoginUrl } = useAuth();
@@ -45,7 +46,7 @@ export default function LoginPage() {
         'ADMIN': 'TEST-SUB-ADMIN-001',
         'OFFICER': 'TEST-SUB-OFFICER-001'
       };
-      await axios.post('/auth/dev-login', {
+      await axios.post(`${API_BASE}/auth/dev-login`, {
         aadhaar_sub: subMap[devRole],
         role: devRole,
         loa_level: devLoa

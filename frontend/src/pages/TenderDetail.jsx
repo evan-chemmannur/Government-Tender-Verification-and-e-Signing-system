@@ -6,6 +6,7 @@ import StatusBadge from '../components/StatusBadge';
 import { formatCurrency, formatDate } from '../components/TenderCard';
 import SignConfirmationModal from '../components/SignConfirmationModal';
 import { ArrowLeft, CheckCircle, Clock, FileText, Download, ShieldX, Link as LinkIcon, History, Fingerprint, FileCheck } from 'lucide-react';
+import { API_BASE } from '../services/api';
 
 export default function TenderDetail() {
   const { id } = useParams();
@@ -45,19 +46,19 @@ export default function TenderDetail() {
   const handleDownloadPdf = async () => {
     try {
       // First check if PDF is ready
-      const statusRes = await fetch(`/api/tenders/${id}/pdf/status`, { credentials: 'include' });
+      const statusRes = await fetch(`${API_BASE}/api/tenders/${id}/pdf/status`, { credentials: 'include' });
       if (statusRes.ok) {
         const statusData = await statusRes.json();
         if (statusData.ready) {
           // PDF ready — open directly
-          window.open(`/api/tenders/${id}/pdf`, '_blank');
+          window.open(`${API_BASE}/api/tenders/${id}/pdf`, '_blank');
           return;
         }
       }
 
       // PDF not ready yet — trigger generation
       setPdfStatus('generating');
-      const genRes = await fetch(`/api/tenders/${id}/pdf/generate`, {
+      const genRes = await fetch(`${API_BASE}/api/tenders/${id}/pdf/generate`, {
         method: 'POST',
         credentials: 'include',
         headers: { 'X-CSRF-Token': document.cookie.match(/XSRF-TOKEN=([^;]+)/)?.[1] || '' }
@@ -79,13 +80,13 @@ export default function TenderDetail() {
         }
 
         try {
-          const pollRes = await fetch(`/api/tenders/${id}/pdf/status`, { credentials: 'include' });
+          const pollRes = await fetch(`${API_BASE}/api/tenders/${id}/pdf/status`, { credentials: 'include' });
           if (pollRes.ok) {
             const data = await pollRes.json();
             if (data.ready) {
               clearInterval(poll);
               setPdfStatus('ready');
-              window.open(`/api/tenders/${id}/pdf`, '_blank');
+              window.open(`${API_BASE}/api/tenders/${id}/pdf`, '_blank');
             } else if (data.error) {
               clearInterval(poll);
               setPdfStatus('failed');
@@ -302,7 +303,7 @@ export default function TenderDetail() {
                   {pdfStatus === 'generating' && (
                     <p className="text-xs text-center text-muted mt-1 animate-pulse">PDF is being generated, please wait...</p>
                   )}
-                  <button onClick={() => window.open(`/api/tenders/${id}/vc`, '_blank')} className="w-full bg-white text-institutional-blue border-2 border-institutional-blue hover:bg-blue-50 font-bold py-3 px-4 rounded-xl shadow-sm flex items-center justify-center gap-2 transition-all">
+                  <button onClick={() => window.open(`${API_BASE}/api/tenders/${id}/vc`, '_blank')} className="w-full bg-white text-institutional-blue border-2 border-institutional-blue hover:bg-blue-50 font-bold py-3 px-4 rounded-xl shadow-sm flex items-center justify-center gap-2 transition-all">
                     <LinkIcon className="w-5 h-5" /> View Raw VC
                   </button>
                 </>

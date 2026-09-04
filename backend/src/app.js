@@ -21,7 +21,6 @@ import statusListRouter from './routes/statusList.js';
 import didRouter from './routes/did.js';
 import awardLettersRouter from './routes/awardLetters.js';
 import adminRouter from './routes/admin.js';
-``
 
 // ── Task 16: Security middleware imports ──────────────────────────────────────
 import {
@@ -36,6 +35,7 @@ import { csrfProtection, csrfTokenHandler } from './middleware/csrfProtection.js
 import { sanitizeRequestBody } from './utils/inputSanitization.js';
 
 const app = express();
+app.set('trust proxy', 1);
 const PgSession = connectPgSimple(session);
 
 app.use(securityHeaders);

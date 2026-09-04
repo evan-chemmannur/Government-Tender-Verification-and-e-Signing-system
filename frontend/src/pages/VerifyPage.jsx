@@ -10,6 +10,7 @@ import {
     verifyTenderAward,
     decodePixelPassQR
 } from '../services/verificationService';
+import { API_BASE } from '../services/api';
 
 // ─────────────────────────────────────────────────────────
 // Step Progress Bar
@@ -86,7 +87,7 @@ export default function VerifyPage() {
     const fetchAndVerifyTender = async (tenderId) => {
         setPhase('verifying');
         try {
-            const res = await fetch(`/api/public/vc/${tenderId}`);
+            const res = await fetch(`${API_BASE}/api/public/vc/${tenderId}`);
             if (!res.ok) {
                 setResult({ verdict: 'ERROR', steps: [], error: `Could not load tender: HTTP ${res.status}`, claims: null });
                 setPhase('done');

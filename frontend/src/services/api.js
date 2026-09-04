@@ -1,8 +1,10 @@
 import axios from 'axios';
 
+export const API_BASE = import.meta.env.VITE_API_BASE_URL ? import.meta.env.VITE_API_BASE_URL.replace(/\/$/, '') : '';
+
 // The proxy config in vite.config.js handles routing /api to localhost:3001 in dev
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: `${API_BASE}/api`,
   withCredentials: true, // Crucial for sending secure HttpOnly cookies automatically
 });
 
@@ -16,7 +18,7 @@ let csrfToken = null;
 const fetchCsrfToken = async () => {
   if (csrfToken) return csrfToken;
   try {
-    const res = await axios.get('/auth/csrf-token', { withCredentials: true });
+    const res = await axios.get(`${API_BASE}/auth/csrf-token`, { withCredentials: true });
     csrfToken = res.data.csrfToken;
     return csrfToken;
   } catch (err) {
@@ -165,25 +167,25 @@ export const tenderApi = {
 };
 
 export const authApi = {
- getMe: async () => {
-  const res = await axios.get('/auth/me', { withCredentials: true });
-  return res.data;
-},
-getStatus: async () => {
-  const res = await axios.get('/auth/status', { withCredentials: true });
-  return res.data;
-},
-refreshSession: async () => {
-  const res = await axios.post('/auth/refresh', {}, { withCredentials: true });
-  return res.data;
-},
-getLoginUrl: async (acr = 'otp') => {
-  const res = await axios.get(`/auth/login-url?acr=${acr}`, { withCredentials: true });
-  return res.data;
-},
-logout: async () => {
-  const res = await axios.post('/auth/logout', {}, { withCredentials: true });
-  return res.data;
-}
+  getMe: async () => {
+    const res = await axios.get(`${API_BASE}/auth/me`, { withCredentials: true });
+    return res.data;
+  },
+  getStatus: async () => {
+    const res = await axios.get(`${API_BASE}/auth/status`, { withCredentials: true });
+    return res.data;
+  },
+  refreshSession: async () => {
+    const res = await axios.post(`${API_BASE}/auth/refresh`, {}, { withCredentials: true });
+    return res.data;
+  },
+  getLoginUrl: async (acr = 'otp') => {
+    const res = await axios.get(`${API_BASE}/auth/login-url?acr=${acr}`, { withCredentials: true });
+    return res.data;
+  },
+  logout: async () => {
+    const res = await axios.post(`${API_BASE}/auth/logout`, {}, { withCredentials: true });
+    return res.data;
+  }
 };
 export default api;

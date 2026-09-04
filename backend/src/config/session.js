@@ -23,7 +23,7 @@ export const sessionMiddleware = session({
     cookie: {
         secure: NODE_ENV === 'production',
         httpOnly: true,
-        sameSite: 'strict',
+        sameSite: NODE_ENV === 'production' ? 'none' : 'lax',
         maxAge: 24 * 60 * 60 * 1000 // 1 day cookie expiry (will be capped on server side)
     }
 });
