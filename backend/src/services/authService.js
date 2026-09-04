@@ -4,14 +4,17 @@ import { createClient } from 'redis';
 import { generatePKCE as cryptoGeneratePKCE, loadPrivateKey, signJWT } from '../utils/crypto.js';
 import { jwksService } from './jwksCache.js';
 
-// Setup Redis client for JTI replay prevention
-const redisClient = createClient({
-  url: process.env.REDIS_URL || 'redis://localhost:6379'
-});
+// Setup optional Redis client for JTI replay prevention with in-memory fallback
+const inMemoryJti = new Set();
+let redisClient = null;
 
-// We connect it asynchronously, handling errors to prevent crashes
-redisClient.on('error', (err) => console.error('Redis Client Error', err));
-redisClient.connect().catch(console.error);
+if (process.env.REDIS_URL) {
+  redisClient = createClient({
+    url: process.env.REDIS_URL
+  });
+  redisClient.on('error', (err) => console.error('Redis Client Error', err));
+  redisClient.connect().catch((err) => console.error('Redis Connect Error', err.message));
+}
 
 export const authService = {
   /**
@@ -137,14 +140,20 @@ export const authService = {
 
       // Replay prevention using JTI
       if (payload.jti) {
-        const isReplayed = await redisClient.get(`jti:${payload.jti}`);
-        if (isReplayed) {
-          throw new Error('INVALID_CLAIMS'); // Token already used
-        }
-        
-        // Store JTI in Redis with an expiry matching the token's remaining lifetime (max 1 hour fallback)
         const ttl = payload.exp ? Math.max(1, payload.exp - Math.floor(Date.now() / 1000)) : 3600;
-        await redisClient.setEx(`jti:${payload.jti}`, ttl, 'used');
+        if (redisClient && redisClient.isOpen) {
+          const isReplayed = await redisClient.get(`jti:${payload.jti}`);
+          if (isReplayed) {
+            throw new Error('INVALID_CLAIMS'); // Token already used
+          }
+          await redisClient.setEx(`jti:${payload.jti}`, ttl, 'used');
+        } else {
+          if (inMemoryJti.has(payload.jti)) {
+            throw new Error('INVALID_CLAIMS');
+          }
+          inMemoryJti.add(payload.jti);
+          setTimeout(() => inMemoryJti.delete(payload.jti), ttl * 1000);
+        }
       }
 
       return payload;
