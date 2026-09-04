@@ -175,51 +175,49 @@ export default function LoginPage() {
             </div>
           </div>
 
-          {/* Developer Login Section (Only visible in DEV) */}
-          {import.meta.env.DEV && (
-            <div className="relative bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 overflow-hidden">
-              <div className="flex items-center gap-2 mb-4 border-b border-white/10 pb-3">
-                <Terminal className="w-4 h-4 text-saffron" />
-                <h3 className="text-sm font-bold text-white/90">Developer Mode</h3>
+          {/* Demo / Sandbox Login Section */}
+          <div className="relative bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 overflow-hidden shadow-xl">
+            <div className="flex items-center gap-2 mb-4 border-b border-white/15 pb-3">
+              <Terminal className="w-4 h-4 text-saffron" />
+              <h3 className="text-sm font-bold text-white/90">Demo / Evaluator Quick Login</h3>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="text-[10px] uppercase font-bold tracking-wider text-white/70">Role</label>
+                  <select 
+                    value={devRole}
+                    onChange={(e) => setDevRole(e.target.value)}
+                    className="w-full bg-navy/80 border border-white/30 text-white text-sm rounded-lg px-3 py-2 outline-none focus:border-saffron font-medium"
+                  >
+                    <option value="OFFICER" className="bg-navy text-white">OFFICER</option>
+                    <option value="ADMIN" className="bg-navy text-white">ADMIN</option>
+                  </select>
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] uppercase font-bold tracking-wider text-white/70">LoA Level</label>
+                  <select 
+                    value={devLoa}
+                    onChange={(e) => setDevLoa(e.target.value)}
+                    className="w-full bg-navy/80 border border-white/30 text-white text-sm rounded-lg px-3 py-2 outline-none focus:border-saffron font-medium"
+                  >
+                    <option value="LOA_3_BIOMETRIC" className="bg-navy text-white">LOA_3_BIOMETRIC</option>
+                    <option value="LOA_2_OTP" className="bg-navy text-white">LOA_2_OTP</option>
+                  </select>
+                </div>
               </div>
               
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <label className="text-[10px] uppercase font-bold tracking-wider text-white/50">Role</label>
-                    <select 
-                      value={devRole}
-                      onChange={(e) => setDevRole(e.target.value)}
-                      className="w-full bg-white/10 border border-white/20 text-white text-sm rounded-lg px-3 py-2 outline-none focus:border-saffron"
-                    >
-                      <option value="OFFICER" className="text-navy">OFFICER</option>
-                      <option value="ADMIN" className="text-navy">ADMIN</option>
-                    </select>
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-[10px] uppercase font-bold tracking-wider text-white/50">LoA Level</label>
-                    <select 
-                      value={devLoa}
-                      onChange={(e) => setDevLoa(e.target.value)}
-                      className="w-full bg-white/10 border border-white/20 text-white text-sm rounded-lg px-3 py-2 outline-none focus:border-saffron"
-                    >
-                      <option value="LOA_2_OTP" className="text-navy">LOA_2_OTP</option>
-                      <option value="LOA_3_BIOMETRIC" className="text-navy">LOA_3_BIOMETRIC</option>
-                    </select>
-                  </div>
-                </div>
-                
-                <button
-                  onClick={handleDevLogin}
-                  disabled={isDevLoggingIn}
-                  className="w-full flex items-center justify-center gap-2 py-2.5 bg-saffron hover:bg-saffron/90 text-navy font-bold text-sm rounded-lg transition-colors disabled:opacity-50"
-                >
-                  {isDevLoggingIn ? <Loader2 className="w-4 h-4 animate-spin" /> : <Terminal className="w-4 h-4" />}
-                  Dev Login (Skip eSignet)
-                </button>
-              </div>
+              <button
+                onClick={handleDevLogin}
+                disabled={isDevLoggingIn}
+                className="w-full flex items-center justify-center gap-2 py-3 bg-saffron hover:bg-saffron-dark text-navy font-bold text-sm rounded-xl shadow-md transition-all disabled:opacity-50"
+              >
+                {isDevLoggingIn ? <Loader2 className="w-4 h-4 animate-spin" /> : <Terminal className="w-4 h-4" />}
+                Sign In as Demo Official
+              </button>
             </div>
-          )}
+          </div>
 
         </div>
 

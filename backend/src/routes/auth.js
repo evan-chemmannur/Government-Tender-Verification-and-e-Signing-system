@@ -225,8 +225,8 @@ router.post('/refresh', requireAuth, (req, res) => {
   res.json({ success: true, message: 'Session does not need extension yet' });
 });
 
-// DEV ONLY — Mock login without eSignet (for testing)
-if (process.env.NODE_ENV === 'development') {
+// Demo / Dev login (enabled for testing/evaluation)
+if (process.env.ENABLE_DEV_LOGIN !== 'false') {
   router.post('/dev-login', async (req, res) => {
     const { aadhaar_sub, role, loa_level } = req.body;
     
