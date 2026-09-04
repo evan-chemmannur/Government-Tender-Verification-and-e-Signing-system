@@ -55,7 +55,8 @@ export default function LoginPage() {
       window.location.replace('/tenders');
     } catch (err) {
       console.error('Dev login failed', err);
-      alert('Dev login failed');
+      const detail = err.response?.data?.error || err.response?.data?.message || err.message;
+      alert(`Login failed: ${detail}\n\nEndpoint: ${API_BASE || '(relative /auth/dev-login)'}`);
     } finally {
       setIsDevLoggingIn(false);
     }
