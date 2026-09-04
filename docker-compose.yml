@@ -1,0 +1,92 @@
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: tender_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-tender_portal}
+      POSTGRES_USER: ${POSTGRES_USER:-tender_app}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-tender_password}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-tender_app} -d ${POSTGRES_DB:-tender_portal}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: tender_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: tender_pgadmin
+    ports:
+      - "5050:80"
+    volumes:
+      - ./pgadmin/servers.json:/pgadmin4/servers.json
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@tenderportal.gov
+      PGADMIN_DEFAULT_PASSWORD: admin
+    profiles:
+      - tools
+    depends_on:
+      - db
+
+  backend:
+    build:
+      context: ./backend
+      target: builder
+    container_name: tender_backend
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./backend/src:/app/src
+      - ./keys:/app/keys
+    env_file: .env
+    environment:
+      - NODE_ENV=development
+      - DB_HOST=db
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=postgresql://tender_app:tender_password@db:5432/tender_portal
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3001/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    command: sh -c "npm install && npx nodemon src/server.js"
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: tender_frontend
+    ports:
+      - "3000:80"
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+    environment:
+      REACT_APP_API_URL: http://backend:3001
+    depends_on:
+      backend:
+        condition: service_healthy
+       
+volumes:
+  postgres_data:
+  redis_data:

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tender Award Certificate Ready</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f1f5f9; margin: 0; padding: 20px; color: #1e293b; }
+    .card { background: white; max-width: 600px; margin: 0 auto; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+    .header { background: linear-gradient(135deg, #1e3a6e 0%, #2563eb 100%); color: white; padding: 32px 24px; text-align: center; }
+    .header h1 { margin: 0 0 8px 0; font-size: 22px; }
+    .header p { margin: 0; opacity: 0.85; font-size: 14px; }
+    .body { padding: 28px 24px; }
+    .details { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin: 20px 0; }
+    .details table { width: 100%; border-collapse: collapse; }
+    .details td { padding: 6px 0; font-size: 14px; }
+    .details td:first-child { color: #64748b; width: 40%; font-weight: 600; }
+    .contract-value { font-size: 20px; color: #166534; font-weight: bold; margin: 10px 0; }
+    .btn { display: inline-block; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 15px; margin: 8px 4px; text-align: center; }
+    .btn-primary { background: #2563eb; color: white; }
+    .btn-secondary { background: #0f172a; color: white; }
+    .footer { background: #f8fafc; padding: 16px 24px; text-align: center; font-size: 12px; color: #94a3b8; border-top: 1px solid #e2e8f0; }
+    .badge { display: inline-block; background: #dcfce7; color: #166534; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-bottom: 12px; }
+    .instructions { background: #e0f2fe; padding: 16px; border-radius: 8px; border: 1px solid #bae6fd; font-size: 13px; color: #075985; margin: 20px 0; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="header">
+      <div style="font-size: 40px; margin-bottom: 8px;">🏛️</div>
+      <h1>Tender Award Certificate Ready</h1>
+      <p>Government of Maharashtra — Public Works Department</p>
+    </div>
+    <div class="body">
+      <span class="badge">✓ VERIFIED CREDENTIAL ISSUED</span>
+      <p>Dear <strong>{{BIDDER_NAME}}</strong>,</p>
+      <p>Congratulations! Your bid has been accepted and your <strong>Verifiable Credential (VC)</strong> has been issued to your digital wallet.</p>
+
+      <div class="details">
+        <table>
+          <tr><td>Tender ID</td><td><strong>{{TENDER_ID}}</strong></td></tr>
+          <tr><td>Title</td><td>{{TENDER_TITLE}}</td></tr>
+          <tr>
+            <td colspan="2" style="padding-top: 10px;">
+              <span style="color: #64748b; font-weight: 600; font-size: 12px; display: block;">Contract Value</span>
+              <div class="contract-value">{{CONTRACT_VALUE}}</div>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <div style="text-align: center; margin: 24px 0;">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+          <tr>
+            <td align="center">
+              <a href="{{WALLET_URL}}" class="btn btn-primary">📱 Add to Inji Wallet</a>
+              <a href="{{PDF_URL}}" class="btn btn-secondary">📄 Download Award PDF</a>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="instructions">
+        <h4 style="margin: 0 0 8px 0;">How to verify this document:</h4>
+        <p style="margin: 0;">Any third party can scan the QR code on the PDF or verify it online at:<br/>
+        <a href="{{VERIFICATION_URL}}">{{VERIFICATION_URL}}</a></p>
+      </div>
+
+      <div style="margin-top: 20px; font-size: 13px; color: #475569;">
+        <strong>Department Contact:</strong><br/>
+        Email: {{CONTACT_EMAIL}}<br/>
+        Phone: {{CONTACT_PHONE}}
+      </div>
+    </div>
+    <div class="footer">
+      <p>Maharashtra Government Tender Portal · Public Works Department</p>
+      <p>This is an automated message. Do not reply directly.</p>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: tender-portal
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: backend
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: backend
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/metrics"
+    spec:
+      initContainers:
+      - name: migrate
+        image: tender-backend:latest
+        imagePullPolicy: IfNotPresent
+        command: ["npm", "run", "migrate"]
+        envFrom:
+        - configMapRef:
+            name: tender-portal-config
+        - secretRef:
+            name: tender-portal-secrets
+      containers:
+      - name: backend
+        image: tender-backend:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3001
+        envFrom:
+        - configMapRef:
+            name: tender-portal-config
+        - secretRef:
+            name: tender-portal-secrets
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "256Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3001
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health/ready
+            port: 3001
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        volumeMounts:
+        - name: pdf-storage
+          mountPath: /var/lib/tender-portal/storage/pdfs
+        - name: keys
+          mountPath: /etc/tender-portal/keys
+          readOnly: true
+      volumes:
+      - name: pdf-storage
+        emptyDir: {} # In production, use a PersistentVolumeClaim
+      - name: keys
+        secret:
+          secretName: tender-portal-secrets
+          items:
+          - key: OIDC_PRIVATE_KEY
+            path: private.key

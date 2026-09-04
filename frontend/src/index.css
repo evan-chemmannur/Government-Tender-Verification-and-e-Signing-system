@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-navy: #0F2D5E;
+    --color-institutional-blue: #1A6BAB;
+    --color-saffron: #C8922A;
+    --color-surface: #F4F7FC;
+    --color-card: #FFFFFF;
+    --color-border: #DDE3EE;
+    --color-success: #1A7F4B;
+    --color-danger: #B91C1C;
+    --color-text: #0D1B2E;
+    --color-muted: #5C6F8A;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-surface text-text antialiased;
+  }
+
+  /* Custom Focus Ring for Accessibility */
+  *:focus-visible {
+    outline: 2px solid var(--color-saffron);
+    outline-offset: 2px;
+  }
+
+  /* Reduced Motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-saffron text-white hover:bg-saffron-dark font-bold py-3 px-6 rounded-lg shadow-md transition-all;
+  }
+  .btn-secondary {
+    @apply bg-white text-navy border-2 border-navy hover:bg-surface font-semibold py-3 px-6 rounded-lg shadow-sm transition-all;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background-color: var(--color-navy);
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-saffron);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-saffron);
+  filter: brightness(0.9);
+}

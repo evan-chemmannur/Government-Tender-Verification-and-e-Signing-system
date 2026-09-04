@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tender-portal-config
+  namespace: tender-portal
+data:
+  NODE_ENV: "production"
+  PORT: "3001"
+  FRONTEND_URL: "https://tender.maharashtra.gov.in"
+  ESIGNET_BASE_URL: "https://esignet.maharashtra.gov.in"
+  INJI_CERTIFY_BASE_URL: "https://certify.maharashtra.gov.in"
+  PRIVATE_KEY_PATH: "/etc/tender-portal/keys/private.key"
+  PDF_STORAGE_DIR: "/var/lib/tender-portal/storage/pdfs"
+  DOCX_TEMPLATES_DIR: "/app/templates"
+  DB_HOST: "postgres-service.tender-portal.svc.cluster.local"
+  DB_PORT: "5432"
+  DB_USER: "tender_admin"
+  DB_NAME: "tender_db"
+  REDIS_URL: "redis://redis-service.tender-portal.svc.cluster.local:6379"
+  CLIENT_ID: "tender-portal-client"
+  INJI_CLIENT_ID: "tender-portal-inji-client"

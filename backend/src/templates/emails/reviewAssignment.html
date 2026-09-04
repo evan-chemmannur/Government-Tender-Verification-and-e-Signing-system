@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tender Review Assignment</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f1f5f9; margin: 0; padding: 20px; color: #1e293b; }
+    .card { background: white; max-width: 600px; margin: 0 auto; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+    .header { background: linear-gradient(135deg, #0f172a 0%, #334155 100%); color: white; padding: 24px; text-align: left; }
+    .header h1 { margin: 0; font-size: 20px; }
+    .body { padding: 28px 24px; }
+    .details { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin: 20px 0; }
+    .details table { width: 100%; border-collapse: collapse; }
+    .details td { padding: 8px 0; font-size: 14px; }
+    .details td:first-child { color: #64748b; width: 30%; font-weight: 600; }
+    .btn { display: inline-block; padding: 12px 24px; background: #2563eb; color: white; border-radius: 6px; text-decoration: none; font-weight: bold; margin-top: 10px; }
+    .footer { background: #f8fafc; padding: 16px 24px; text-align: left; font-size: 12px; color: #94a3b8; border-top: 1px solid #e2e8f0; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="header">
+      <h1>Tender Review Assignment</h1>
+    </div>
+    <div class="body">
+      <p>Dear <strong>{{OFFICER_NAME}}</strong>,</p>
+      <p>A new tender has been submitted and assigned to you for review.</p>
+      <div class="details">
+        <table>
+          <tr><td>Tender ID</td><td><strong>{{TENDER_ID}}</strong></td></tr>
+          <tr><td>Title</td><td>{{TENDER_TITLE}}</td></tr>
+        </table>
+      </div>
+      <p>Please log in to the portal to review the documents and provide your assessment.</p>
+    </div>
+    <div class="footer">
+      <p>Maharashtra Government Tender Portal · Internal Notification</p>
+    </div>
+  </div>
+</body>
+</html>

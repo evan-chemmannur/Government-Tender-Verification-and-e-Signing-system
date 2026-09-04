@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Important Notice: Tender Award Revoked</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f1f5f9; margin: 0; padding: 20px; color: #1e293b; }
+    .card { background: white; max-width: 600px; margin: 0 auto; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+    .header { background: linear-gradient(135deg, #b91c1c 0%, #ef4444 100%); color: white; padding: 32px 24px; text-align: center; }
+    .header h1 { margin: 0 0 8px 0; font-size: 22px; }
+    .header p { margin: 0; opacity: 0.85; font-size: 14px; }
+    .body { padding: 28px 24px; }
+    .details { background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 16px; margin: 20px 0; }
+    .details table { width: 100%; border-collapse: collapse; }
+    .details td { padding: 6px 0; font-size: 14px; }
+    .details td:first-child { color: #991b1b; width: 30%; font-weight: 600; }
+    .reason-box { background: white; padding: 16px; border-left: 4px solid #ef4444; margin-top: 10px; font-style: italic; color: #450a0a; }
+    .footer { background: #f8fafc; padding: 16px 24px; text-align: center; font-size: 12px; color: #94a3b8; border-top: 1px solid #e2e8f0; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="header">
+      <div style="font-size: 40px; margin-bottom: 8px;">⚠️</div>
+      <h1>Important Notice: Tender Award Revoked</h1>
+      <p>Government of Maharashtra — Public Works Department</p>
+    </div>
+    <div class="body">
+      <p>Dear <strong>{{BIDDER_NAME}}</strong>,</p>
+      <p>This is an official notification that the Verifiable Credential for your tender award has been <strong>revoked</strong>.</p>
+      <div class="details">
+        <table>
+          <tr><td>Tender ID</td><td><strong>{{TENDER_ID}}</strong></td></tr>
+          <tr><td>Title</td><td>{{TENDER_TITLE}}</td></tr>
+          <tr><td colspan="2" style="padding-top:12px;"><strong>Reason for Revocation:</strong></td></tr>
+        </table>
+        <div class="reason-box">
+          <strong>{{REASON}}</strong><br/><br/>
+          {{NOTES}}
+        </div>
+      </div>
+      <p style="font-size: 14px;">The Verifiable Credential in your digital wallet is no longer valid and will fail verification if presented.</p>
+      <div style="margin-top: 20px; font-size: 13px; color: #475569;">
+        <strong>Contact for queries:</strong><br/>
+        Email: {{CONTACT_EMAIL}}<br/>
+        Phone: {{CONTACT_PHONE}}
+      </div>
+    </div>
+    <div class="footer">
+      <p>Maharashtra Government Tender Portal · Public Works Department</p>
+      <p>This is an automated message. Do not reply directly.</p>
+    </div>
+  </div>
+</body>
+</html>

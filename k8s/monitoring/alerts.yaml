@@ -1,0 +1,36 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: tender-portal-alerts
+  namespace: tender-portal
+  labels:
+    release: prometheus
+spec:
+  groups:
+  - name: tender-portal.rules
+    rules:
+    - alert: BackendPodCrashLooping
+      expr: rate(kube_pod_container_status_restarts_total{namespace="tender-portal", container="backend"}[5m]) > 0
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Backend pod is crashing"
+        description: "Backend pod in namespace {{ $labels.namespace }} has been restarting repeatedly for 5 minutes."
+    - alert: DatabaseDown
+      expr: up{job="postgres"} == 0 or absent(up{job="postgres"})
+      for: 2m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Database is unreachable"
+        description: "Postgres database is down or unreachable."
+    - alert: HighVCIssuanceFailures
+      # Assuming a custom metric `http_requests_total{path="/api/tenders/sign", status=~"5.."}` exists
+      expr: rate(http_requests_total{path=~".*/sign", status=~"5.."}[5m]) > 0.05
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "High VC Issuance Failure Rate"
+        description: "More than 5% of VC issuance/signing requests are failing in the last 5 minutes."

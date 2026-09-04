@@ -1,0 +1,131 @@
+name: CI/CD Pipeline — Government Tender Portal
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  NODE_ENV: test
+  SESSION_SECRET: ci-test-session-secret-32-chars!!
+  FRONTEND_URL: http://localhost:3000
+  ESIGNET_BASE_URL: https://esignet.mock.test
+  CLIENT_ID: test-client-id
+  REDIRECT_URI: http://localhost:3001/auth/callback
+  INJI_CERTIFY_BASE_URL: https://api.certify.mock.test
+  INJI_CLIENT_ID: test-inji-client
+  INJI_CLIENT_SECRET: test-inji-secret
+  LOG_LEVEL: error
+
+jobs:
+  # ── Backend Tests ──────────────────────────────────────────
+  backend-test:
+    name: Backend Tests & Coverage
+    runs-on: ubuntu-latest
+
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install backend dependencies
+        working-directory: ./backend
+        run: npm ci
+
+      - name: Run backend tests with coverage
+        working-directory: ./backend
+        run: npm test
+        env:
+          NODE_OPTIONS: --experimental-vm-modules
+          REDIS_URL: redis://localhost:6379
+
+      - name: Upload backend coverage report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: backend-coverage
+          path: backend/coverage/
+          retention-days: 14
+
+  # ── Frontend Tests ─────────────────────────────────────────
+  frontend-test:
+    name: Frontend Tests & Coverage
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install frontend dependencies
+        working-directory: ./frontend
+        run: npm ci
+
+      - name: Run frontend tests
+        working-directory: ./frontend
+        run: npx vitest run --reporter=verbose
+
+      - name: Run frontend build (validate)
+        working-directory: ./frontend
+        run: npm run build
+
+  # ── Security Audit ─────────────────────────────────────────
+  security-audit:
+    name: Dependency Security Audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+
+      - name: Audit backend dependencies
+        working-directory: ./backend
+        run: npm audit --audit-level=high || true
+
+      - name: Audit frontend dependencies
+        working-directory: ./frontend
+        run: npm audit --audit-level=high || true
+
+  # ── Docker Build ───────────────────────────────────────────
+  build-docker:
+    name: Docker Image Build
+    needs: [backend-test, frontend-test]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build backend Docker image
+        run: docker build -t tender-backend:ci ./backend
+
+      - name: Build frontend Docker image
+        run: docker build -t tender-frontend:ci ./frontend
+
+      - name: Verify Docker Compose config
+        run: docker compose config --quiet

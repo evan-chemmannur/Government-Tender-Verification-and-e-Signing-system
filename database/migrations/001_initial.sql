@@ -1,0 +1,10 @@
+-- ============================================================================
+-- DEPRECATED: This file has been superseded.
+-- ============================================================================
+-- The monolithic initial migration has been split into:
+--   001_extensions.sql  – PostgreSQL extensions (uuid-ossp, pgcrypto, btree_gin)
+--   002_enums.sql       – Custom ENUM types
+--   003_core_tables.sql – All application tables, constraints, and indices
+--
+-- This file is intentionally left empty. Do NOT add SQL here.
+-- ============================================================================

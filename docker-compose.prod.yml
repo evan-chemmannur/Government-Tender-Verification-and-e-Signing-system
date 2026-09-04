@@ -1,0 +1,56 @@
+services:
+  db:
+    # Do not expose the port externally in production
+    ports: !reset []
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+
+  redis:
+    ports: !reset []
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
+  # pgadmin is completely excluded in production (it requires --profile tools to run anyway)
+
+  backend:
+    # Use image tag from environment instead of building locally
+    image: tender-backend:${IMAGE_TAG:-latest}
+    build: !reset null
+    # No source code volumes in production
+    volumes:
+      - ./keys:/app/keys
+    restart: always
+    environment:
+      - NODE_ENV=production
+    command: npm start
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+
+  frontend:
+    # Use image tag from environment instead of building locally
+    image: tender-frontend:${IMAGE_TAG:-latest}
+    build: !reset null
+    # Exposing port 80 for Nginx
+    ports:
+      - "80:80"
+    # No source code volumes in production
+    volumes: !reset []
+    restart: always
+    # Nginx handles health in prod container
+    command: ["nginx", "-g", "daemon off;"]
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
