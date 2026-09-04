@@ -36,9 +36,13 @@ export const useAuth = () => {
     mutationFn: authApi.getLoginUrl
   });
 
+  const rawData = authData?.data || authData;
+  const officer = (rawData && typeof rawData === 'object' && (rawData.id || rawData.role || rawData.email)) ? rawData : null;
+  const isAuthenticated = !!officer;
+
   return {
-    officer: authData?.data || authData,
-    isAuthenticated: !!(authData?.data || authData),
+    officer,
+    isAuthenticated,
     isLoading,
     isError,
     error,

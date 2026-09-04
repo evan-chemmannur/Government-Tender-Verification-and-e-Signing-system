@@ -36,7 +36,7 @@ export default function TenderList() {
             Active Tenders
           </h1>
           <p className="text-muted mt-2 font-medium">
-            Welcome back, {officer?.name}. You are logged in as <span className="font-bold text-text">{officer?.role.replace('_', ' ')}</span>.
+            Welcome back, {officer?.name || 'Officer'}. You are logged in as <span className="font-bold text-text">{officer?.role ? officer.role.replace('_', ' ') : 'OFFICER'}</span>.
           </p>
         </div>
         <div className="flex items-center gap-4">

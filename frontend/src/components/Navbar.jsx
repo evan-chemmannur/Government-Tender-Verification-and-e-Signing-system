@@ -44,7 +44,7 @@ export default function Navbar() {
             <div className="text-right hidden sm:block">
               <p className="text-sm font-semibold text-white">{officer.name}</p>
               {/* Role badge: pill shape, gold outline */}
-              <p className="text-xs font-bold text-saffron mt-0.5 px-2 py-0.5 border border-saffron rounded-full inline-block uppercase tracking-wider">{officer.role.replace('_', ' ')}</p>
+              <p className="text-xs font-bold text-saffron mt-0.5 px-2 py-0.5 border border-saffron rounded-full inline-block uppercase tracking-wider">{officer.role ? officer.role.replace('_', ' ') : 'OFFICER'}</p>
             </div>
             <button 
               onClick={logout} 
